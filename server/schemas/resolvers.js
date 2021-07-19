@@ -36,7 +36,7 @@ const resolvers = {
             return { user, token };
         },
         saveBook: async (parent, args, context)=> {
-            console.log(context);
+            console.log(context.user);
             try {
                 const updatedUser = await User.findOneAndUpdate(
                     {_id:context.user._id },
@@ -48,55 +48,25 @@ const resolvers = {
                 console.log(e);
             }
         },
-        // saveBook: async (parent, {authors,description,bookId,title,image,link }, context)=> {
-        // // saveBook: async (parent, args, context)=> {
-        //     try {
-        //         const updatedUser = await User.findOneAndUpdate(
-        //             {_id:context.user._id },
-        //             { $addToSet: { savedBooks: {            
-        //                         bookId: bookId,
-        //                         authors: authors,
-        //                         description: description,
-        //                         title: title,
-        //                         image: image,
-        //                         link: link} 
-        //             }},
-        //             { new: true, runValidators: true }
-        //         );
-        //         return updatedUser;
-        //     } catch (e) {
-        //         console.log(e);
-        //     }
-
-        //     // if (context.user) {
-        //     //     const book = await Book.create({
-        //     //         bookId: bookId,
-        //     //         authors: authors,
-        //     //         description: description,
-        //     //         title: title,
-        //     //         image: image,
-        //     //         link: link
-        //     //     })
-                
-        //     //     const updatedUser = await User.findOneAndUpdate(
-        //     //         {_id:context.user._id},
-        //     //         {$push: { savedBooks: book._id}},
-        //     //         { new: true }
-        //     //     ).select('-__v -password')
-        //     //     .populate('savedBooks');
-        //     //     return updatedUser;
-        //     // } throw new AuthenticationError('Please Log In');
-        // },
-        removeBook: async(parent, {bookId}, context) =>{
-            
-            if (context.user) {
-                const updatedUser = await User.findOneAndUpdate(
-                    {_id:context.user.id},
-                    {$pull: {savedBooks: bookId}},
-                    { new: true }
-                );
-                return updatedUser;
-            } throw new AuthenticationError('Please Log In');
+        removeBook: async(parent, bookId, context) =>{
+            console.log(context.user);
+            const updatedUser = await User.findOneAndUpdate(
+                { _id:context.user._id },
+                { $pull: { savedBooks: bookId }},
+                { new: true }
+            );
+            if (!updatedUser) {
+                throw new AuthenticationError("Couldn't find user with this id!");
+            }
+            return updatedUser;
+            // if (context.user) {
+            //     const updatedUser = await User.findOneAndUpdate(
+            //         {_id:context.user.id},
+            //         { $pull: { savedBooks: { bookId: bookId }}},
+            //         { new: true }
+            //     );
+            //     return updatedUser;
+            // } throw new AuthenticationError('Please Log In');
         }  
     }
 };

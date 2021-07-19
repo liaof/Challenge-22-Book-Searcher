@@ -33,6 +33,5 @@ mutation saveBook($authors:[String],$description:String,$bookId:String,$title:St
         description
         title
       }
-    }
   }
-`;
+}`;
