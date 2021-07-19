@@ -36,6 +36,7 @@ const resolvers = {
             return { user, token };
         },
         saveBook: async (parent, args, context)=> {
+            console.log(context);
             try {
                 const updatedUser = await User.findOneAndUpdate(
                     {_id:context.user._id },
@@ -87,6 +88,7 @@ const resolvers = {
         //     // } throw new AuthenticationError('Please Log In');
         // },
         removeBook: async(parent, {bookId}, context) =>{
+            
             if (context.user) {
                 const updatedUser = await User.findOneAndUpdate(
                     {_id:context.user.id},
