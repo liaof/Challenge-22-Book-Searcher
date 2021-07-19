@@ -4,6 +4,9 @@ import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'reac
 import Auth from '../utils/auth';
 import { saveBook, searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
+import { useQuery } from '@apollo/client';
+import { QUERY_ME } from '../utils/queries';
+
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -13,6 +16,8 @@ const SearchBooks = () => {
 
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
+  const { loading, data } = useQuery(QUERY_ME);
+  // const[saveBooks] = useMutation(SAVE_BOOK);
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
@@ -23,7 +28,7 @@ const SearchBooks = () => {
   // create method to search for books and set state on form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
+    
     if (!searchInput) {
       return false;
     }
@@ -76,7 +81,23 @@ const SearchBooks = () => {
     } catch (err) {
       console.error(err);
     }
+
+    // if (!token) {
+    //   return false;
+    // }
+    // try {
+    //   const {data }= await saveBookIds({
+    //     variables: { bookId: bookToSave.bookId}
+    //   });
+    //   Auth.login(data.)
+    // } catch (e) { console.error(e)};
   };
+
+  
+  const savedBooks= data?.savedBooks || [];
+  
+  console.log(searchedBooks);
+  console.log(savedBooks);
 
   return (
     <>
@@ -124,7 +145,7 @@ const SearchBooks = () => {
                   <Card.Text>{book.description}</Card.Text>
                   {Auth.loggedIn() && (
                     <Button
-                      disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
+                      disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}//disable save book btn if the book is already saved, checked via bookId
                       className='btn-block btn-info'
                       onClick={() => handleSaveBook(book.bookId)}>
                       {savedBookIds?.some((savedBookId) => savedBookId === book.bookId)
@@ -132,6 +153,11 @@ const SearchBooks = () => {
                         : 'Save this Book!'}
                     </Button>
                   )}
+                  <Button
+                      disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
+                      className='btn-block btn-info'
+                      href={'https://www.google.ca/books/edition/'+book.title+'/'+book.bookId}>Buy This Book!
+                  </Button>
                 </Card.Body>
               </Card>
             );
