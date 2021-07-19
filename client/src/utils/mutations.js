@@ -24,9 +24,25 @@ export const ADD_USER = gql`
   }
 `;
 
+// export const SAVE_BOOK = gql`
+// mutation saveBook($authors:[String],$description:String,$bookId:String,$title:String,$image:String,$link:String,$id:ID,$username:String,$email:String) {
+//   saveBook(authors:$authors,description:$description,bookId:$bookId,title:$title,image:$image,link:$link,_id:$id,username:$username,email:$email){
+//       savedBooks{
+//         authors
+//         description
+//         bookId
+//         title
+//         image
+//         link
+//       }
+//   }
+// }`;
 export const SAVE_BOOK = gql`
 mutation saveBook($authors:[String],$description:String,$bookId:String,$title:String,$image:String,$link:String) {
   saveBook(authors:$authors,description:$description,bookId:$bookId,title:$title,image:$image,link:$link){
+    _id
+    username
+    email  
       savedBooks{
         authors
         description
