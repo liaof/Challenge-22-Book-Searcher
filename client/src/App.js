@@ -24,9 +24,10 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const client = new ApolloClient({// instantiate the Apollo Client
-  link: httpLink,// connect Apollo Client to the graphql endpoint
+  link:  authLink.concat(httpLink),// connect Apollo Client to the graphql endpoint
   cache: new InMemoryCache()//instantiate cache object
 });
+
 const loggedIn = Auth.loggedIn();
 function App() {
   return (
