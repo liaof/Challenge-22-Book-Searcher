@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Book } = require('../models');
 const { AuthenticationError } = require('apollo-server-express');
 const { signToken} = require('../utils/auth');
 
@@ -35,24 +35,27 @@ const resolvers = {
             const token = signToken(user);
             return { user, token };
         },
-        saveBook: async (parent, { input }, context)=> {
+        saveBook: async (parent, {authors,description,bookId,title,image,link }, context)=> {
+        // saveBook: async (parent, args, context)=> {
+
             if (context.user) {
+                const book = await Book.create({
+                    bookId: bookId,
+                    authors: authors,
+                    description: description,
+                    title: title,
+                    image: image,
+                    link: link
+                })
+                
                 const updatedUser = await User.findOneAndUpdate(
-                    {_id:context.user.id},
-                    {$push: 
-                        { savedBooks: { 
-                                bookID: input.bookID,
-                                authors: input.authors,
-                                description: input.description,
-                                title: input.title,
-                                image: input.image,
-                                link: input.link 
-                        }}
-                    },
+                    {_id:context.user._id},
+                    {$push: { savedBooks: book._id}},
                     { new: true }
-                );
+                ).select('-__v -password')
+                .populate('savedBooks');
                 return updatedUser;
-            } throw new AuthenticactionError('Please Log In');
+            } throw new AuthenticationError('Please Log In');
         },
         removeBook: async(parent, {bookId}, context) =>{
             if (context.user) {
@@ -73,3 +76,11 @@ const resolvers = {
 //     removeBook(bookId: ID!): User
 // }
 module.exports = resolvers;
+
+// authors='asdasd';
+// description="asdasdasd";
+// bookId="ASDASd";
+// title="bbbbb";
+// image="nwer";
+// link="909wef";
+// console.log(Book);
