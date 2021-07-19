@@ -36,7 +36,8 @@ const resolvers = {
             return { user, token };
         },
         saveBook: async (parent, args, context)=> {
-            console.log(context.user);
+            console.log("context.user "+context.user);
+            console.log(args.title);
             try {
                 const updatedUser = await User.findOneAndUpdate(
                     {_id:context.user._id },
@@ -49,7 +50,6 @@ const resolvers = {
             }
         },
         removeBook: async(parent, bookId, context) =>{
-            console.log(context.user);
             const updatedUser = await User.findOneAndUpdate(
                 { _id:context.user._id },
                 { $pull: { savedBooks: bookId }},
