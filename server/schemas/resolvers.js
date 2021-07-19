@@ -37,25 +37,42 @@ const resolvers = {
         },
         saveBook: async (parent, {authors,description,bookId,title,image,link }, context)=> {
         // saveBook: async (parent, args, context)=> {
-
-            if (context.user) {
-                const book = await Book.create({
-                    bookId: bookId,
-                    authors: authors,
-                    description: description,
-                    title: title,
-                    image: image,
-                    link: link
-                })
-                
+            try {
                 const updatedUser = await User.findOneAndUpdate(
-                    {_id:context.user._id},
-                    {$push: { savedBooks: book._id}},
-                    { new: true }
-                ).select('-__v -password')
-                .populate('savedBooks');
+                    {_id:context.user._id },
+                    { $addToSet: { savedBooks: {            
+                                bookId: bookId,
+                                authors: authors,
+                                description: description,
+                                title: title,
+                                image: image,
+                                link: link} 
+                    }},
+                    { new: true, runValidators: true }
+                );
                 return updatedUser;
-            } throw new AuthenticationError('Please Log In');
+            } catch (e) {
+                console.log(e);
+            }
+
+            // if (context.user) {
+            //     const book = await Book.create({
+            //         bookId: bookId,
+            //         authors: authors,
+            //         description: description,
+            //         title: title,
+            //         image: image,
+            //         link: link
+            //     })
+                
+            //     const updatedUser = await User.findOneAndUpdate(
+            //         {_id:context.user._id},
+            //         {$push: { savedBooks: book._id}},
+            //         { new: true }
+            //     ).select('-__v -password')
+            //     .populate('savedBooks');
+            //     return updatedUser;
+            // } throw new AuthenticationError('Please Log In');
         },
         removeBook: async(parent, {bookId}, context) =>{
             if (context.user) {

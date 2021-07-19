@@ -5,19 +5,22 @@ import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
-
+import { useQuery } from '@apollo/client';
+import { QUERY_ME } from '../utils/queries';
 
 const SavedBooks = () => {
   const [userData, setUserData] = useState({});
+  const { data } = useQuery(QUERY_ME);
 
   // use this to determine if `useEffect()` hook needs to run again
   const userDataLength = Object.keys(userData).length;
+
+  const me = data?.me||{};
 
   useEffect(() => {
     const getUserData = async () => {
       try {
         const token = Auth.loggedIn() ? Auth.getToken() : null;
-
         if (!token) {
           return false;
         }
@@ -66,7 +69,9 @@ const SavedBooks = () => {
   if (!userDataLength) {
     return <h2>LOADING...</h2>;
   }
-
+  if (!data) {
+    return <h2>again</h2>;
+  }
   return (
     <>
       <Jumbotron fluid className='text-light bg-dark'>
@@ -74,7 +79,7 @@ const SavedBooks = () => {
           <h1>Viewing saved books!</h1>
         </Container>
       </Jumbotron>
-      <Container>
+      {/* <Container>
         <h2>
           {userData.savedBooks.length
             ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
@@ -97,7 +102,7 @@ const SavedBooks = () => {
             );
           })}
         </CardColumns>
-      </Container>
+      </Container> */}
     </>
   );
 };
