@@ -8,7 +8,7 @@ This week, we had to incorporate GraphQL into an existing, fully functional webs
 The task entailed converting the existing routes, controllers, and models into typeDefs and resolvers on the back-end. This allows us to then execute queries without first importing the query itself from the serverside API.
 
 ### Usage
-Click on the heroku link above, or to run a local version, clone the repository then run 'npm i' from the root directory of the project. Then run 'npm run develop' to simultaneously launch the client and the server.
+Click on the heroku link above, or clone the repository 'npm i' from the root directory of the project. Then run 'npm run develop' to simultaneously launch the client and the server.
 
 To utlise the GraphQL Playground, change directories to the 'client' folder, then run npm run watch and go to [http://localhost:3001/graphql](http://localhost:3001/graphql).
 
